@@ -1,0 +1,1618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Green - Your Environmental Companion</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 30%, #fde68a 60%, #fbbf24 100%);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Floating Leaves Animation */
+        .leaf-float {
+            position: fixed;
+            font-size: 2rem;
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 1;
+            animation: floatLeaf 15s infinite ease-in-out;
+        }
+
+        @keyframes floatLeaf {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .leaf-float:nth-child(1) { left: 10%; animation-delay: 0s; animation-duration: 20s; }
+        .leaf-float:nth-child(2) { left: 30%; animation-delay: 5s; animation-duration: 18s; }
+        .leaf-float:nth-child(3) { left: 50%; animation-delay: 10s; animation-duration: 22s; }
+        .leaf-float:nth-child(4) { left: 70%; animation-delay: 15s; animation-duration: 19s; }
+        .leaf-float:nth-child(5) { left: 85%; animation-delay: 3s; animation-duration: 21s; }
+        .leaf-float:nth-child(6) { left: 20%; animation-delay: 8s; animation-duration: 17s; }
+
+        /* Growing Tree Animation */
+        .tree-decoration {
+            position: fixed;
+            bottom: -50px;
+            font-size: 8rem;
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 1;
+            animation: growTree 3s ease-out forwards;
+        }
+
+        @keyframes growTree {
+            from {
+                transform: scale(0) translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1) translateY(0);
+                opacity: 0.15;
+            }
+        }
+
+        .tree-left { left: 5%; }
+        .tree-right { right: 5%; }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 8px 32px rgba(245, 158, 11, 0.15);
+            animation: slideDown 0.8s ease-out;
+            border-bottom: 2px solid rgba(251, 191, 36, 0.2);
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #92400e;
+            cursor: pointer;
+        }
+
+        .leaf-icon {
+            width: 40px;
+            height: 40px;
+            animation: rotate 4s ease-in-out infinite;
+        }
+
+        @keyframes rotate {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(15deg); }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #b45309;
+            font-weight: 600;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            z-index: -1;
+            transition: left 0.3s ease;
+        }
+
+        .nav-links a:hover::before {
+            left: 0;
+        }
+
+        .nav-links a:hover {
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* LOGOUT BUTTON */
+        .logout-btn {
+            position: fixed;
+            top: 90px;
+            right: 20px;
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(220, 38, 38, 0.3);
+            z-index: 999;
+            display: none;
+            font-size: 1rem;
+        }
+
+        .logout-btn.show {
+            display: block;
+            animation: slideInRight 0.5s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4);
+        }
+
+        /* Page Container */
+        .page {
+            display: none;
+            padding: 120px 5% 50px;
+            min-height: 100vh;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* LOGIN PAGE */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+
+        .login-box {
+            background: linear-gradient(135deg, #ffffff 0%, #fffbeb 100%);
+            padding: 3.5rem;
+            border-radius: 30px;
+            box-shadow: 0 25px 80px rgba(245, 158, 11, 0.25);
+            max-width: 480px;
+            width: 100%;
+            animation: fadeInUp 0.8s ease-out;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid rgba(251, 191, 36, 0.3);
+            z-index: 10;
+        }
+
+        .login-box::before {
+            content: '🌿';
+            position: absolute;
+            top: -30px;
+            right: -30px;
+            font-size: 10rem;
+            opacity: 0.06;
+            transform: rotate(-25deg);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .login-box::after {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.15), transparent);
+            border-radius: 50%;
+            top: -150px;
+            left: -150px;
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.15; }
+            50% { transform: scale(1.2); opacity: 0.25; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(-25deg); }
+            50% { transform: translateY(-20px) rotate(-15deg); }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-logo {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .login-header h1 {
+            color: #92400e;
+            font-size: 2.8rem;
+            margin-bottom: 0.8rem;
+            font-weight: 700;
+        }
+
+        .login-header p {
+            color: #b45309;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .login-form {
+            position: relative;
+            z-index: 1;
+        }
+
+        .error-message {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            color: #991b1b;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            text-align: center;
+            display: none;
+            border: 2px solid #fca5a5;
+            font-weight: 600;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* HOME PAGE - Cities with Climate */
+        .cities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: 3.5rem;
+            color: #92400e;
+            margin-bottom: 1rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .page-subtitle {
+            text-align: center;
+            font-size: 1.3rem;
+            color: #b45309;
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .city-card {
+            background: linear-gradient(135deg, #ffffff 0%, #fffbeb 100%);
+            border-radius: 25px;
+            padding: 2.5rem;
+            box-shadow: 0 15px 40px rgba(245, 158, 11, 0.15);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out both;
+            border: 2px solid rgba(251, 191, 36, 0.2);
+        }
+
+        .city-card:nth-child(1) { animation-delay: 0.1s; }
+        .city-card:nth-child(2) { animation-delay: 0.2s; }
+        .city-card:nth-child(3) { animation-delay: 0.3s; }
+        .city-card:nth-child(4) { animation-delay: 0.4s; }
+        .city-card:nth-child(5) { animation-delay: 0.5s; }
+
+        .city-card::before {
+            content: '🍃';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 4rem;
+            opacity: 0.1;
+            transform: rotate(25deg);
+            transition: all 0.6s ease;
+        }
+
+        .city-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.15), transparent 70%);
+            transform: rotate(45deg);
+            transition: all 0.6s ease;
+            opacity: 0;
+        }
+
+        .city-card:hover::before {
+            transform: rotate(45deg) scale(1.3);
+            opacity: 0.3;
+        }
+
+        .city-card:hover::after {
+            opacity: 1;
+            top: -10%;
+            left: -10%;
+        }
+
+        .city-card:hover {
+            transform: translateY(-15px) scale(1.03);
+            box-shadow: 0 25px 60px rgba(245, 158, 11, 0.25);
+            border-color: rgba(251, 191, 36, 0.4);
+        }
+
+        .city-name {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #92400e;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .climate-data {
+            position: relative;
+            z-index: 1;
+        }
+
+        .climate-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #fde68a;
+            transition: all 0.3s ease;
+        }
+
+        .climate-item:hover {
+            padding-left: 10px;
+            background: rgba(251, 191, 36, 0.1);
+            border-radius: 8px;
+        }
+
+        .climate-label {
+            color: #b45309;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .climate-value {
+            color: #92400e;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        /* FEATURES PAGE */
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-box {
+            background: white;
+            border-radius: 25px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+            transition: all 0.5s ease;
+            animation: slideInLeft 0.8s ease-out both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-box:nth-child(even) {
+            flex-direction: row-reverse;
+            animation: slideInRight 0.8s ease-out both;
+        }
+
+        .feature-box:nth-child(1) { animation-delay: 0.2s; }
+        .feature-box:nth-child(2) { animation-delay: 0.4s; }
+        .feature-box:nth-child(3) { animation-delay: 0.6s; }
+        .feature-box:nth-child(4) { animation-delay: 0.8s; }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .feature-box::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.2), transparent);
+            border-radius: 50%;
+            top: -100px;
+            right: -100px;
+            transition: all 0.8s ease;
+        }
+
+        .feature-box:hover::before {
+            transform: scale(1.5);
+            opacity: 0.5;
+        }
+
+        .feature-box:hover {
+            transform: scale(1.02);
+            box-shadow: 0 15px 50px rgba(245, 158, 11, 0.2);
+        }
+
+        .feature-icon-large {
+            font-size: 6rem;
+            min-width: 150px;
+            text-align: center;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .feature-content h3 {
+            font-size: 2rem;
+            color: #92400e;
+            margin-bottom: 1rem;
+        }
+
+        .feature-content p {
+            color: #b45309;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        /* DASHBOARD PAGE */
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .user-info {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            text-align: center;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .user-info h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #ffffff 0%, #fffbeb 100%);
+            padding: 2rem;
+            border-radius: 25px;
+            box-shadow: 0 10px 35px rgba(245, 158, 11, 0.15);
+            transition: all 0.4s ease;
+            animation: fadeInUp 0.8s ease-out both;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(251, 191, 36, 0.15);
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.2s; }
+        .stat-card:nth-child(2) { animation-delay: 0.3s; }
+        .stat-card:nth-child(3) { animation-delay: 0.4s; }
+
+        .stat-card::before {
+            content: '🌱';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 3rem;
+            opacity: 0.08;
+            transform: rotate(-15deg);
+            transition: all 0.5s ease;
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #f59e0b, #fbbf24, #f59e0b);
+            transform: scaleX(0);
+            transition: transform 0.5s ease;
+        }
+
+        .stat-card:hover::before {
+            transform: rotate(15deg) scale(1.3);
+            opacity: 0.2;
+        }
+
+        .stat-card:hover::after {
+            transform: scaleX(1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(245, 158, 11, 0.25);
+            border-color: rgba(251, 191, 36, 0.3);
+        }
+
+        .stat-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #92400e;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #b45309;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .pollution-chart {
+            background: linear-gradient(135deg, #ffffff 0%, #fffbeb 100%);
+            padding: 2.5rem;
+            border-radius: 25px;
+            box-shadow: 0 15px 40px rgba(245, 158, 11, 0.15);
+            animation: fadeInUp 0.8s ease-out 0.5s both;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(251, 191, 36, 0.15);
+        }
+
+        .pollution-chart::before {
+            content: '🌳';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 5rem;
+            opacity: 0.06;
+            transform: rotate(-10deg);
+        }
+
+        .pollution-chart h3 {
+            color: #92400e;
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .chart-bars {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 300px;
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        .bar-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .bar {
+            width: 100%;
+            background: linear-gradient(to top, #f59e0b, #fbbf24);
+            border-radius: 10px 10px 0 0;
+            transition: all 0.8s ease;
+            animation: growUp 1.5s ease-out;
+            position: relative;
+        }
+
+        @keyframes growUp {
+            from { height: 0; }
+        }
+
+        .bar:hover {
+            background: linear-gradient(to top, #d97706, #f59e0b);
+            transform: scaleY(1.05);
+        }
+
+        .bar-label {
+            color: #92400e;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .bar-value {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #92400e;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        /* CONTACT PAGE */
+        .contact-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .contact-card {
+            background: linear-gradient(135deg, #ffffff 0%, #fffbeb 100%);
+            padding: 3rem 2rem;
+            border-radius: 25px;
+            box-shadow: 0 15px 40px rgba(245, 158, 11, 0.15);
+            text-align: center;
+            transition: all 0.4s ease;
+            animation: fadeInUp 0.8s ease-out both;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(251, 191, 36, 0.15);
+        }
+
+        .contact-card:nth-child(1) { animation-delay: 0.2s; }
+        .contact-card:nth-child(2) { animation-delay: 0.4s; }
+        .contact-card:nth-child(3) { animation-delay: 0.6s; }
+
+        .contact-card::before {
+            content: '🍃';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            font-size: 8rem;
+            opacity: 0.05;
+            top: -50px;
+            right: -50px;
+            transform: rotate(45deg);
+            transition: all 0.6s ease;
+        }
+
+        .contact-card::after {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.2), transparent);
+            border-radius: 50%;
+            top: -100px;
+            right: -100px;
+            transition: all 0.6s ease;
+            opacity: 0;
+        }
+
+        .contact-card:hover::before {
+            transform: rotate(65deg) scale(1.3);
+            opacity: 0.15;
+        }
+
+        .contact-card:hover::after {
+            opacity: 1;
+            transform: scale(2);
+        }
+
+        .contact-card:hover {
+            transform: translateY(-15px) rotate(2deg);
+            box-shadow: 0 25px 60px rgba(245, 158, 11, 0.25);
+            border-color: rgba(251, 191, 36, 0.3);
+        }
+
+        .contact-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        .contact-card h3 {
+            color: #92400e;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .contact-card p {
+            color: #b45309;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .contact-card a {
+            color: #f59e0b;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .contact-card a:hover {
+            color: #d97706;
+            text-decoration: underline;
+        }
+
+        .contact-form {
+            background: linear-gradient(135deg, #ffffff 0%, #fffbeb 100%);
+            padding: 3rem;
+            border-radius: 25px;
+            box-shadow: 0 15px 40px rgba(245, 158, 11, 0.15);
+            animation: fadeInUp 0.8s ease-out 0.8s both;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(251, 191, 36, 0.15);
+        }
+
+        .contact-form::before {
+            content: '🌿';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 4rem;
+            opacity: 0.08;
+            transform: rotate(-25deg);
+        }
+
+        .contact-form h3 {
+            color: #92400e;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #b45309;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #fde68a;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2.5rem;
+            }
+
+            .nav-links {
+                gap: 0.5rem;
+            }
+
+            .nav-links a {
+                padding: 0.4rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .feature-box {
+                flex-direction: column !important;
+                text-align: center;
+            }
+
+            .chart-bars {
+                height: 200px;
+            }
+
+            .logout-btn {
+                top: 80px;
+                right: 10px;
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+            }
+
+            .login-box {
+                padding: 2.5rem;
+                max-width: 400px;
+            }
+
+            .login-header h1 {
+                font-size: 2.2rem;
+            }
+
+            .login-logo {
+                font-size: 4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Leaves -->
+    <div class="leaf-float">🍃</div>
+    <div class="leaf-float">🍃</div>
+    <div class="leaf-float">🍃</div>
+    <div class="leaf-float">🍃</div>
+    <div class="leaf-float">🍃</div>
+    <div class="leaf-float">🍃</div>
+
+    <!-- Tree Decorations -->
+    <div class="tree-decoration tree-left">🌳</div>
+    <div class="tree-decoration tree-right">🌳</div>
+
+    <!-- Logout Button -->
+    <button class="logout-btn" id="logoutBtn" onclick="logout()">🚪 Logout</button>
+
+    <!-- Navigation -->
+    <nav id="mainNav" style="display: none;">
+        <div class="logo" onclick="showPage('home')">
+            <svg class="leaf-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2Z" fill="#f59e0b"/>
+                <path d="M12 6C9.8 6 8 7.8 8 10C8 12.2 9.8 14 12 14C14.2 14 16 12.2 16 10C16 7.8 14.2 6 12 6Z" fill="#92400e"/>
+            </svg>
+            Live Green
+        </div>
+        <ul class="nav-links">
+            <li><a onclick="showPage('home')">Home</a></li>
+            <li><a onclick="showPage('features')">Features</a></li>
+            <li><a onclick="showPage('dashboard')">Dashboard</a></li>
+            <li><a onclick="showPage('contact')">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- LOGIN PAGE -->
+    <div id="login" class="page active">
+        <div class="login-container">
+            <div class="login-box">
+                <div class="login-header">
+                    <div class="login-logo">🌿</div>
+                    <h1>Welcome Back</h1>
+                    <p>Login to continue your environmental journey</p>
+                </div>
+                <form class="login-form" onsubmit="handleLogin(event)">
+                    <div class="error-message" id="errorMessage">❌ Invalid username or password</div>
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="username" placeholder="Enter your username" required autocomplete="username">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="password" placeholder="Enter your password" required autocomplete="current-password">
+                    </div>
+                    <button type="submit" class="submit-btn">🔑 Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- HOME PAGE - Cities Climate Data -->
+    <div id="home" class="page">
+        <h1 class="page-title">🌍 Environmental Data Across India</h1>
+        <p class="page-subtitle">Real-time climate monitoring for major cities</p>
+        
+        <div class="cities-grid">
+            <!-- Bangalore -->
+            <div class="city-card">
+                <h2 class="city-name">🌳 Bangalore</h2>
+                <div class="climate-data">
+                    <div class="climate-item">
+                        <span class="climate-label">🌡️ Temperature</span>
+                        <span class="climate-value">27°C</span>
+                    </div>
+                    <div class="climate-item">
+                        <span class="climate-label">💧 Humidity</span>
+                        <span class="climate-value">62%</span>
+                    </div>
+                    <div class="climate-item">
+                        <span class="climate-label">🌪️ Air Quality</span>
+                        <span class="climate-value">Moderate</span>
+                    </div>
+                    <div class="climate-item">
+                        <span class="climate-label">☀️ UV Index</span>
+                        <span class="climate-value">6</span>
+                    </div>
+                    <div class="climate-item">
+                        <span class="climate-label">💨 Wind Speed</span>
+                        <span class="climate-value">12 km/h</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mumbai -->
+            <div class="city-card">
+                <h2 class="city-name">�️ Mumbai</h2>
+                <div class="climate-data">
+                    <div class="climate-item">
+                        <span class="climate-label">🌡️ Temperature</span>
+                        <span class="climate-value">32°C</span>
+                    </div>
+                    <div class="climate-item">
+                        <span class="climate-label">💧 Humidity</span>
+                        <span class="climate-value">78%</span>
+                    </div>
+                    <div class="climate-item">
+                        <span class="climate-label">🌪️ Air Quality</span>
+                        <span class="climate-value">Poor</span>
+                    </div>
+                    <div class="climate-item">
+                        <span class="climate-label">☀️ UV Index</span>
+                        <span class="climate-value">8</span>
+                    </div>
+                    <div class="climate-item">
+                        <span class="climate-label">💨 Wind Speed</span>
+                        <span class="climate-value">18 km/h</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pune -->
+            <div class="city-card">
+                <h2 class="city-name">🏔️ Pune</h2>
+                <div class="climate-data">
+                    <div class="climate-item">
+                        <span class="climate-label">🌡️ Temperature</span>
+                        <span class="climate-value">29°C</span>
+                    </div>
+                    <div class="climate-item">
+                        <span class="climate-label">💧 Humidity</span>
+                        <span class="climate-value">55%</span>
+                    </div>
+                    <div class="climate-item">
+                        <span class="climate-label">🌪️ Air Quality</span>
+                        <span class="climate-value">Good</span>
+                    </div>
+                    <div class="climate-item">
+                        <span class="climate-label">☀️ UV Index</span>
+                        <span class="climate-value">7</span>
+                    </div>
+                    <div class="climate-item">
+                        <span class="climate-label">💨 Wind Speed</span>
+                        <span class="climate-value">15 km/h</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chennai -->
+            <div class="city-card">
+                <h2 class="city-name">🌊 Chennai</h2>
+                <div class="climate-data">
+                    <div class="climate-item">
+                        <span class="climate-label">🌡️ Temperature</span>
+                        <span class="climate-value">34°C</span>
+                    </div>
+                    <div class="climate-item">
+                        <span class="climate-label">💧 Humidity</span>
+                        <span class="climate-value">82%</span>
+                    </div>
+                    <div class="climate-item">
+                        <span class="climate-label">🌪️ Air Quality</span>
+                        <span class="climate-value">Moderate</span>
+                    </div>
+                    <div class="climate-item">
+                        <span class="climate-label">☀️ UV Index</span>
+                        <span class="climate-value">9</span>
+                    </div>
+                    <div class="climate-item">
+                        <span class="climate-label">💨 Wind Speed</span>
+                        <span class="climate-value">20 km/h</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hyderabad -->
+            <div class="city-card">
+                <h2 class="city-name">🏛️ Hyderabad</h2>
+                <div class="climate-data">
+                    <div class="climate-item">
+                        <span class="climate-label">🌡️ Temperature</span>
+                        <span class="climate-value">31°C</span>
+                    </div>
+                    <div class="climate-item">
+                        <span class="climate-label">💧 Humidity</span>
+                        <span class="climate-value">58%</span>
+                    </div>
+                    <div class="climate-item">
+                        <span class="climate-label">🌪️ Air Quality</span>
+                        <span class="climate-value">Moderate</span>
+                    </div>
+                    <div class="climate-item">
+                        <span class="climate-label">☀️ UV Index</span>
+                        <span class="climate-value">7</span>
+                    </div>
+                    <div class="climate-item">
+                        <span class="climate-label">💨 Wind Speed</span>
+                        <span class="climate-value">14 km/h</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FEATURES PAGE -->
+    <div id="features" class="page">
+        <h1 class="page-title">✨ Why Choose Live Green?</h1>
+        <p class="page-subtitle">Empowering you to make a difference, one step at a time</p>
+        
+        <div class="features-container">
+            <div class="feature-box">
+                <div class="feature-icon-large">🌍</div>
+                <div class="feature-content">
+                    <h3>Build a More Secure Future</h3>
+                    <p>This app will help you build a more secure future for yourself and generations to come. By monitoring your environmental impact daily, you contribute to a healthier planet and ensure a sustainable world for your children and their children.</p>
+                </div>
+            </div>
+
+            <div class="feature-box">
+                <div class="feature-icon-large">👣</div>
+                <div class="feature-content">
+                    <h3>Improve Your Carbon Footprint Journey</h3>
+                    <p>You will improve upon your carbon footprint journey with real-time tracking and actionable insights. Watch as your efforts translate into measurable reductions in emissions, and celebrate each milestone as you work toward carbon neutrality.</p>
+                </div>
+            </div>
+
+            <div class="feature-box">
+                <div class="feature-icon-large">💚</div>
+                <div class="feature-content">
+                    <h3>Make Every Action Count</h3>
+                    <p>Every small action you take matters. This app empowers you to understand how your daily choices - from transportation to energy consumption - impact the environment, helping you make informed decisions that create lasting positive change.</p>
+                </div>
+            </div>
+
+            <div class="feature-box">
+                <div class="feature-icon-large">🎯</div>
+                <div class="feature-content">
+                    <h3>Achieve Your Environmental Goals</h3>
+                    <p>Set personalized environmental goals and track your progress with precision. Whether you want to reduce your carbon emissions by 20% or adopt more sustainable habits, this app provides the tools and motivation to turn your aspirations into reality.</p>
+                </div>
+            </div>
+
+            <div class="feature-box">
+                <div class="feature-icon-large">🌱</div>
+                <div class="feature-content">
+                    <h3>Join a Global Movement</h3>
+                    <p>You're not alone in this journey. Join millions of environmentally conscious individuals worldwide who are committed to making a difference. Share your achievements, learn from others, and be part of a community that's actively working toward a greener tomorrow.</p>
+                </div>
+            </div>
+
+            <div class="feature-box">
+                <div class="feature-icon-large">📊</div>
+                <div class="feature-content">
+                    <h3>Data-Driven Environmental Awareness</h3>
+                    <p>Knowledge is power. This app provides you with comprehensive data about air quality, pollution levels, and climate conditions in your area, enabling you to make smart choices about when to exercise outdoors, what routes to take, and how to protect your health.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD PAGE -->
+    <div id="dashboard" class="page">
+        <h1 class="page-title">📊 Personal Dashboard</h1>
+        <p class="page-subtitle">Track your environmental journey</p>
+        
+        <div class="dashboard-container">
+            <div class="user-info">
+                <h2>👤 Rajesh Kumar</h2>
+                <p style="font-size: 1.2rem; margin-top: 0.5rem;">📍 Bangalore, Karnataka, India</p>
+                <p style="margin-top: 0.5rem; opacity: 0.9;">Member since January 2024 • Environmental Champion Level 3</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">🏠</div>
+                    <div class="stat-value">Bangalore</div>
+                    <div class="stat-label">Current Location</div>
+                    <p style="color: #b45309; font-size: 0.9rem; margin-top: 0.5rem;">Koramangala, 560034</p>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">👣</div>
+                    <div class="stat-value">3.2 tons</div>
+                    <div class="stat-label">Total Carbon Footprint</div>
+                    <p style="color: #059669; font-size: 0.9rem; margin-top: 0.5rem;">↓ 15% from last month</p>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">🌱</div>
+                    <div class="stat-value">2,450 kg</div>
+                    <div class="stat-label">Carbon Saved This Year</div>
+                    <p style="color: #059669; font-size: 0.9rem; margin-top: 0.5rem;">Equivalent to 120 trees</p>
+                </div>
+            </div>
+
+            <div class="pollution-chart">
+                <h3>📈 Your Weekly Carbon Footprint Breakdown</h3>
+                <div class="chart-bars">
+                    <div class="bar-container">
+                        <div class="bar" style="height: 45%;">
+                            <span class="bar-value">4.5kg</span>
+                        </div>
+                        <span class="bar-label">Mon</span>
+                    </div>
+                    <div class="bar-container">
+                        <div class="bar" style="height: 62%;">
+                            <span class="bar-value">6.2kg</span>
+                        </div>
+                        <span class="bar-label">Tue</span>
+                    </div>
+                    <div class="bar-container">
+                        <div class="bar" style="height: 58%;">
+                            <span class="bar-value">5.8kg</span>
+                        </div>
+                        <span class="bar-label">Wed</span>
+                    </div>
+                    <div class="bar-container">
+                        <div class="bar" style="height: 70%;">
+                            <span class="bar-value">7.0kg</span>
+                        </div>
+                        <span class="bar-label">Thu</span>
+                    </div>
+                    <div class="bar-container">
+                        <div class="bar" style="height: 52%;">
+                            <span class="bar-value">5.2kg</span>
+                        </div>
+                        <span class="bar-label">Fri</span>
+                    </div>
+                    <div class="bar-container">
+                        <div class="bar" style="height: 38%;">
+                            <span class="bar-value">3.8kg</span>
+                        </div>
+                        <span class="bar-label">Sat</span>
+                    </div>
+                    <div class="bar-container">
+                        <div class="bar" style="height: 35%;">
+                            <span class="bar-value">3.5kg</span>
+                        </div>
+                        <span class="bar-label">Sun</span>
+                    </div>
+                </div>
+                <svg width="100%" height="320" viewBox="0 0 800 320" style="margin-top: 20px;" preserveAspectRatio="xMidYMid meet">
+                    <!-- Grid Lines -->
+                    <line x1="80" y1="30" x2="80" y2="240" stroke="#fde68a" stroke-width="2"/>
+                    <line x1="80" y1="240" x2="750" y2="240" stroke="#fde68a" stroke-width="2"/>
+                    
+                    <!-- Y-axis labels (0kg to 8kg scale) -->
+                    <text x="60" y="245" fill="#92400e" font-size="13" font-weight="600" text-anchor="end">0kg</text>
+                    <text x="60" y="193" fill="#92400e" font-size="13" font-weight="600" text-anchor="end">2kg</text>
+                    <text x="60" y="141" fill="#92400e" font-size="13" font-weight="600" text-anchor="end">4kg</text>
+                    <text x="60" y="89" fill="#92400e" font-size="13" font-weight="600" text-anchor="end">6kg</text>
+                    <text x="60" y="37" fill="#92400e" font-size="13" font-weight="600" text-anchor="end">8kg</text>
+                    
+                    <!-- Horizontal grid lines -->
+                    <line x1="80" y1="188" x2="750" y2="188" stroke="#fde68a" stroke-width="1" opacity="0.3" stroke-dasharray="5,5"/>
+                    <line x1="80" y1="136" x2="750" y2="136" stroke="#fde68a" stroke-width="1" opacity="0.3" stroke-dasharray="5,5"/>
+                    <line x1="80" y1="84" x2="750" y2="84" stroke="#fde68a" stroke-width="1" opacity="0.3" stroke-dasharray="5,5"/>
+                    
+                    <!-- Line Graph Path (Coordinates calculated: y = 240 - (value * 26.25)) -->
+                    <!-- Mon: 4.5kg=121.875, Tue: 6.2kg=77.25, Wed: 5.8kg=87.75, Thu: 7.0kg=56.25, Fri: 5.2kg=103.5, Sat: 3.8kg=140.25, Sun: 3.5kg=148.125 -->
+                    <path d="M 176,121.875 L 272,77.25 L 368,87.75 L 464,56.25 L 560,103.5 L 656,140.25 L 752,148.125" 
+                          fill="none" 
+                          stroke="#f59e0b" 
+                          stroke-width="4" 
+                          stroke-linecap="round" 
+                          stroke-linejoin="round">
+                        <animate attributeName="stroke-dasharray" from="0,1000" to="1000,0" dur="2s" fill="freeze"/>
+                    </path>
+                    
+                    <!-- Area under the line -->
+                    <path d="M 176,121.875 L 272,77.25 L 368,87.75 L 464,56.25 L 560,103.5 L 656,140.25 L 752,148.125 L 752,240 L 176,240 Z" 
+                          fill="url(#gradient)" 
+                          opacity="0.3">
+                        <animate attributeName="opacity" from="0" to="0.3" dur="2s" fill="freeze"/>
+                    </path>
+                    
+                    <!-- Data Points -->
+                    <circle cx="176" cy="121.875" r="7" fill="#f59e0b" stroke="white" stroke-width="2">
+                        <animate attributeName="r" from="0" to="7" dur="0.5s" begin="0.5s" fill="freeze"/>
+                    </circle>
+                    <circle cx="272" cy="77.25" r="7" fill="#f59e0b" stroke="white" stroke-width="2">
+                        <animate attributeName="r" from="0" to="7" dur="0.5s" begin="0.7s" fill="freeze"/>
+                    </circle>
+                    <circle cx="368" cy="87.75" r="7" fill="#f59e0b" stroke="white" stroke-width="2">
+                        <animate attributeName="r" from="0" to="7" dur="0.5s" begin="0.9s" fill="freeze"/>
+                    </circle>
+                    <circle cx="464" cy="56.25" r="7" fill="#f59e0b" stroke="white" stroke-width="2">
+                        <animate attributeName="r" from="0" to="7" dur="0.5s" begin="1.1s" fill="freeze"/>
+                    </circle>
+                    <circle cx="560" cy="103.5" r="7" fill="#f59e0b" stroke="white" stroke-width="2">
+                        <animate attributeName="r" from="0" to="7" dur="0.5s" begin="1.3s" fill="freeze"/>
+                    </circle>
+                    <circle cx="656" cy="140.25" r="7" fill="#f59e0b" stroke="white" stroke-width="2">
+                        <animate attributeName="r" from="0" to="7" dur="0.5s" begin="1.5s" fill="freeze"/>
+                    </circle>
+                    <circle cx="752" cy="148.125" r="7" fill="#f59e0b" stroke="white" stroke-width="2">
+                        <animate attributeName="r" from="0" to="7" dur="0.5s" begin="1.7s" fill="freeze"/>
+                    </circle>
+                    
+                    <!-- X-axis labels -->
+                    <text x="176" y="270" fill="#92400e" font-size="14" font-weight="600" text-anchor="middle">Mon</text>
+                    <text x="272" y="270" fill="#92400e" font-size="14" font-weight="600" text-anchor="middle">Tue</text>
+                    <text x="368" y="270" fill="#92400e" font-size="14" font-weight="600" text-anchor="middle">Wed</text>
+                    <text x="464" y="270" fill="#92400e" font-size="14" font-weight="600" text-anchor="middle">Thu</text>
+                    <text x="560" y="270" fill="#92400e" font-size="14" font-weight="600" text-anchor="middle">Fri</text>
+                    <text x="656" y="270" fill="#92400e" font-size="14" font-weight="600" text-anchor="middle">Sat</text>
+                    <text x="752" y="270" fill="#92400e" font-size="14" font-weight="600" text-anchor="middle">Sun</text>
+                    
+                    <!-- Gradient Definition -->
+                    <defs>
+                        <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:0.6" />
+                            <stop offset="100%" style="stop-color:#fbbf24;stop-opacity:0.1" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+
+            <!-- Additional User Details -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem;">
+                <div class="stat-card">
+                    <div class="stat-icon">🚗</div>
+                    <div class="stat-value">24 km</div>
+                    <div class="stat-label">Daily Commute Distance</div>
+                    <p style="color: #b45309; font-size: 0.9rem; margin-top: 0.5rem;">Bike: 60% • Car: 40%</p>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">⚡</div>
+                    <div class="stat-value">180 kWh</div>
+                    <div class="stat-label">Monthly Energy Usage</div>
+                    <p style="color: #b45309; font-size: 0.9rem; margin-top: 0.5rem;">12% below average</p>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">♻️</div>
+                    <div class="stat-value">85%</div>
+                    <div class="stat-label">Recycling Rate</div>
+                    <p style="color: #059669; font-size: 0.9rem; margin-top: 0.5rem;">Excellent performance!</p>
+                </div>
+            </div>
+
+            <!-- Environmental Impact Summary -->
+            <div style="background: white; padding: 2rem; border-radius: 20px; margin-top: 2rem; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);">
+                <h3 style="color: #92400e; font-size: 1.8rem; margin-bottom: 1.5rem; text-align: center;">🌟 Your Environmental Impact Summary</h3>
+                <div style="display: grid; gap: 1rem;">
+                    <div style="padding: 1rem; background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.1)); border-radius: 10px; border-left: 4px solid #f59e0b;">
+                        <p style="color: #92400e; font-weight: 600; margin-bottom: 0.3rem;">🌳 Trees Equivalent</p>
+                        <p style="color: #b45309;">Your carbon savings equal planting 120 trees this year</p>
+                    </div>
+                    <div style="padding: 1rem; background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.1)); border-radius: 10px; border-left: 4px solid #fbbf24;">
+                        <p style="color: #92400e; font-weight: 600; margin-bottom: 0.3rem;">🚲 Sustainable Transport</p>
+                        <p style="color: #b45309;">You've reduced emissions by using bike/public transport 60% of the time</p>
+                    </div>
+                    <div style="padding: 1rem; background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.1)); border-radius: 10px; border-left: 4px solid #d97706;">
+                        <p style="color: #92400e; font-weight: 600; margin-bottom: 0.3rem;">💡 Energy Efficiency</p>
+                        <p style="color: #b45309;">Your household uses 12% less energy than the neighborhood average</p>
+                    </div>
+                    <div style="padding: 1rem; background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.1)); border-radius: 10px; border-left: 4px solid #f59e0b;">
+                        <p style="color: #92400e; font-weight: 600; margin-bottom: 0.3rem;">🎯 Goal Progress</p>
+                        <p style="color: #b45309;">85% toward your 2024 goal of reducing carbon footprint by 20%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTACT PAGE -->
+    <div id="contact" class="page">
+        <h1 class="page-title">📞 Get In Touch</h1>
+        <p class="page-subtitle">We'd love to hear from you!</p>
+        
+        <div class="contact-container">
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <div class="contact-icon">📱</div>
+                    <h3>Phone</h3>
+                    <p>
+                        <a href="tel:+919876543210">+91 98765 43210</a><br>
+                        <a href="tel:+918012345678">+91 80123 45678</a>
+                    </p>
+                    <p style="margin-top: 1rem; font-size: 0.9rem;">Mon-Fri: 9AM - 6PM IST</p>
+                </div>
+
+                <div class="contact-card">
+                    <div class="contact-icon">✉️</div>
+                    <h3>Email</h3>
+                    <p>
+                        <a href="mailto:support@livegreen.com">support@livegreen.com</a><br>
+                        <a href="mailto:info@livegreen.com">info@livegreen.com</a>
+                    </p>
+                    <p style="margin-top: 1rem; font-size: 0.9rem;">We reply within 24 hours</p>
+                </div>
+
+                <div class="contact-card">
+                    <div class="contact-icon">📍</div>
+                    <h3>Address</h3>
+                    <p>
+                        Live Green HQ<br>
+                        123 Eco Avenue<br>
+                        Bangalore, Karnataka<br>
+                        India - 560001
+                    </p>
+                </div>
+            </div>
+
+            <div class="contact-form">
+                <h3>Send Us a Message</h3>
+                <form onsubmit="handleSubmit(event)">
+                    <div class="form-group">
+                        <label>Your Name</label>
+                        <input type="text" placeholder="Enter your name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" placeholder="your.email@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Subject</label>
+                        <input type="text" placeholder="What's this about?" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Message</label>
+                        <textarea placeholder="Tell us more..." required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Send Message 🚀</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Authentication state
+        let isLoggedIn = false;
+
+        // Check login status on page load
+        window.onload = function() {
+            checkLoginStatus();
+        };
+
+        function checkLoginStatus() {
+            const loggedIn = sessionStorage.getItem('isLoggedIn');
+            if (loggedIn === 'true') {
+                isLoggedIn = true;
+                showMainApp();
+            } else {
+                showLoginPage();
+            }
+        }
+
+        function showLoginPage() {
+            document.getElementById('mainNav').style.display = 'none';
+            document.getElementById('logoutBtn').classList.remove('show');
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+            document.getElementById('login').classList.add('active');
+        }
+
+        function showMainApp() {
+            document.getElementById('mainNav').style.display = 'flex';
+            document.getElementById('logoutBtn').classList.add('show');
+            document.getElementById('login').classList.remove('active');
+            showPage('home');
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+
+            // Valid credentials
+            const validUsers = {
+                'username': 'password',
+                'shreya': 'password'
+            };
+
+            if (validUsers[username] && validUsers[username] === password) {
+                // Login successful
+                isLoggedIn = true;
+                sessionStorage.setItem('isLoggedIn', 'true');
+                sessionStorage.setItem('username', username);
+                errorMessage.classList.remove('show');
+                showMainApp();
+                event.target.reset();
+            } else {
+                // Login failed
+                errorMessage.classList.add('show');
+                setTimeout(() => {
+                    errorMessage.classList.remove('show');
+                }, 3000);
+            }
+        }
+
+        function logout() {
+            isLoggedIn = false;
+            sessionStorage.removeItem('isLoggedIn');
+            sessionStorage.removeItem('username');
+            showLoginPage();
+        }
+
+        function showPage(pageId) {
+            if (!isLoggedIn) return;
+            
+            // Hide all pages
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function handleSubmit(event) {
+            event.preventDefault();
+            alert('Thank you for your message! We\'ll get back to you soon. 🌿');
+            event.target.reset();
+        }
+
+        // Add smooth scroll effect
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate bars on dashboard when page loads
+            const bars = document.querySelectorAll('.bar');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animation = 'growUp 1.5s ease-out';
+                    }
+                });
+            });
+
+            bars.forEach(bar => observer.observe(bar));
+        });
+    </script>
+</body>
+</html>
